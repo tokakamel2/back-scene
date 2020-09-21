@@ -1,6 +1,7 @@
 {
     "name": "nogomlebnan",
     "description": "a really cool app",
+    "start" : "node back-end/index.js",
     "version": "1.0.0",
     "engines": {
       "node": "14.7.0",
