@@ -50,7 +50,8 @@ app.post('/rep/login',async(req,res)=>{
 })
 //get all reps
 app.get('/supervisor/allrep',async(req,res)=>{
-    const results =await User.find()
+    const results =await User.find().select("-password -email")
+
     console.log(results)
     res.send(results)
 })
