@@ -8,6 +8,16 @@ const express = require('express');
 const app =express();
 app.use(express.json())
 
+//add new user
+app.get('/new/user',async(req,res)=>{
+     const user = await createUser(req)
+     res.send(user)
+})
+app.get('/new/super',async(req,res)=>{
+  const result= await createSuperVisor(req)
+  res.send(result)
+})
+
 //delete docs
 app.get('/delete/doc',async(req,res)=>{
    const id= req.body._id
@@ -196,27 +206,27 @@ const UserScema = new mongoose.Schema({
 });
 const User= mongoose.model('User',UserScema);
 
-async function createSuperVisor(){
+async function createSuperVisor(req){
     const salt =await bcrypt.genSalt(10)
-    const hashed = await bcrypt.hash('1234',salt);
+    const hashed = await bcrypt.hash(req.body.password,salt);
 const supervisor= new SuperVisor({
-    name:'ahmed',
-    email:'ahmedahmed@gmail.com',
+    name: req.body.name,
+    email:req.body.email,
     password:hashed,
-    role:'super'
+    role: req.body.role
 })
 const result =await supervisor.save()
 console.log(result)
 }
 
-async function createUser(){
+async function createUser(req){
     const salt =await bcrypt.genSalt(10)
-    const hashed = await bcrypt.hash('mandoop11',salt);
+    const hashed = await bcrypt.hash(req.body.password,salt);
     const user= new User({
-        name:'gamal',
-        email:'mandoop1@gmail.com',
+        name:req.body.name,
+        email:req.body.email,
         password:hashed,
-        role:'rep_1'
+        role: req.body.role
     })
 
     const result =await user.save()
