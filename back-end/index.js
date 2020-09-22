@@ -241,6 +241,6 @@ async function createUser(){
     }
 
     async function getAllCleints(req){
-     const clients =  await Load.find({ rep_id: req.body.rep_id }).select("+clientName").exec();
+     const clients =  await Load.find({ rep_id: req.body.rep_id }).select("clientName").exec();
       return clients
     }
