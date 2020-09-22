@@ -217,6 +217,7 @@ const supervisor= new SuperVisor({
 })
 const result =await supervisor.save()
 console.log(result)
+return result
 }
 
 async function createUser(req){
@@ -231,6 +232,7 @@ async function createUser(req){
 
     const result =await user.save()
     console.log(result)
+    return result
     }
 
 
