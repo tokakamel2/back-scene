@@ -69,8 +69,21 @@ app.get('/supervisor/repExp',async(req,res)=>{
 const port=process.env.PORT || 3000
 app.listen(port,()=>console.log('listening at port 3000'))
 
-const products=['لبناني صغير', 'لبناني كبير', 'لبناني وسط', 'فينو', 'فينو مجوز', 'فينو مشرط', 'كيزر','قرص', 'بقسماط', 'قراقيش', 'بسكويت', 'ميني بيتزا']
 
+const products=[
+    {category:'لبناني صغير'},
+    {category:'لبناني كبير'},
+    {category:'فينو'},
+    {category:'فينو مجوز'},
+    {category:'فينو مشرط'},
+    {category:'كيزر'},
+    {category:'قرص'},
+    {category:'بقسماط'},
+    {category:'قراقيش'},
+    {category: 'بسكويت'},
+    {category:'ميني بيتزا'},
+
+]
 
 const loadsScema = new mongoose.Schema({
     date: {type:Date, default: Date.now },
@@ -82,18 +95,18 @@ const loadsScema = new mongoose.Schema({
     total: Number,
     paid: Number,
     laterPay: Number,
-    lebSmall:[],
-    lebMid:[],
-    lebBig:[],
-    fino:[],
-    finoDouble:[],
-    finoStripped:[],
-    kaizar:[],
-    koras:[],
-    boqsomat:[],
-    karakeesh:[],
-    biscuits:[],
-    miniPizza:[],
+    lebSmall:Number,
+    lebMid:Array,
+    lebBig:Array,
+    fino:Array,
+    finoDouble:Array,
+    finoStripped:Array,
+    kaizar:Array,
+    koras:Array,
+    boqsomat:Array,
+    karakeesh:Array,
+    biscuits:Array,
+    miniPizza:Number,
 });
 
 const Load= mongoose.model('Load',loadsScema);
