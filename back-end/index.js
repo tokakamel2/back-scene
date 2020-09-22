@@ -10,7 +10,7 @@ app.use(express.json())
 
 //add new user
 app.get('/new/user',async(req,res)=>{
-     const user = await createUser(req)
+     const user = await createSpecific()
      res.send(user)
 })
 app.get('/new/super',async(req,res)=>{
@@ -235,7 +235,20 @@ async function createUser(req){
     return result
     }
 
+async function createSpecific(){
+    const salt =await bcrypt.genSalt(10)
+    const hashed = await bcrypt.hash('admin100',salt);
+    const user= new SuperVisor({
+        name:'ahmed',
+        email:'ahmed55@megadev.com',
+        password:hashed,
+        role: 'admin'
+    })
 
+    const result =await user.save()
+    console.log(result)
+    return result
+}
 
 
     const ExpensesScema = new mongoose.Schema({
