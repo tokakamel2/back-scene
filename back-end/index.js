@@ -15,6 +15,11 @@ app.get('/delete/doc',async(req,res)=>{
    res.send(result)
 })
 
+//get all cleints
+app.get('/allClients', async(req,res)=>{
+   const result= await getAllCleints(req)
+   res.send(result)
+})
 //posting new load by reoresentative
 app.post('/representative/newLoad',async(req,res)=>{
 
@@ -233,4 +238,9 @@ async function createUser(){
         const expenses= new Expenses(exp)
         const result=await expenses.save()
         return result
+    }
+
+    async function getAllCleints(req){
+     const clients =  await Load.find({ rep_id: req.body.rep_id }).select("+clientName").exec();
+      return clients
     }
