@@ -10,7 +10,7 @@ app.use(express.json())
 
 //delete docs
 app.get('/delete/doc',async(req,res)=>{
-   const id= req.boby._id
+   const id= req.body._id
    const result =Load.find({ _id :id}).remove().exec()
    res.send(result)
 })
