@@ -11,7 +11,8 @@ app.use(express.json())
 //delete docs
 app.get('/delete/doc',async(req,res)=>{
    const id= req.boby._id
-   Load.find({ _id :id}).remove().exec()
+   const result =Load.find({ _id :id}).remove().exec()
+   res.send(result)
 })
 
 //posting new load by reoresentative
