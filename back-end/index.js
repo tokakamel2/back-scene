@@ -8,7 +8,11 @@ const express = require('express');
 const app =express();
 app.use(express.json())
 
-
+//delete docs
+app.get('/delete/doc',async(req,res)=>{
+   const id= req.boby._id
+   Load.find({ _id :id}).remove().exec()
+})
 
 //posting new load by reoresentative
 app.post('/representative/newLoad',async(req,res)=>{
