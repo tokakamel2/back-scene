@@ -22,7 +22,7 @@ app.get('/supervisor/loads',async(req,res)=>{
 })
 //get all loads of todat to supervisor
 app.get('/supervisor/loads/today',async(req,res)=>{
-    res.send(await findByDate())
+    res.send(await findByDate(req.body))
 })
 //get all products to the representative
 app.get('/products',(req,res)=>{
@@ -95,7 +95,8 @@ const loadsScema = new mongoose.Schema({
     total: Number,
     paid: Number,
     laterPay: Number,
-    lebSmall:Number,
+
+    lebSmall:Array,
     lebMid:Array,
     lebBig:Array,
     fino:Array,
@@ -106,7 +107,7 @@ const loadsScema = new mongoose.Schema({
     boqsomat:Array,
     karakeesh:Array,
     biscuits:Array,
-    miniPizza:Number,
+    miniPizza:Array,
 });
 
 const Load= mongoose.model('Load',loadsScema);
@@ -132,14 +133,14 @@ async function getLoads(){
 }
 getLoads()
 
-async function findByDate(){
+async function findByDate(req){
   var d = new Date();
   var dateDay = d.getDate()
   var dateMonth =d.getMonth()+1
   var dateYear =d.getFullYear()
   console.log('d',dateMonth)
 
- const todayLoads =  await Load.find({ dateDay: dateDay, dateMonth:dateMonth, dateYear}).exec();
+ const todayLoads =  await Load.find({ dateDay: dateDay, dateMonth:dateMonth, dateYear:dateYear, rep_id:req.body.rep_id}).exec();
   return todayLoads
 }
 
