@@ -147,7 +147,7 @@ return result
 }
 
 async function getLoads(){
-    const results =await Load.find()
+    const results =await Load.find().select("-date -dateDay -dateMonth -dateYear -clientName -rep_id -total -paid -laterPay")
     console.log(results)
     return results
 }
