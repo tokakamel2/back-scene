@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-mongoose.connect('mongodb+srv://tokakamel2:<password>@cluster0.rr1bh.mongodb.net/<dbname>?retryWrites=true&w=majority')
+mongoose.connect('mongodb://localhost/backery')
     .then(()=>console.log('connected to DB'))
     .catch(err=>console.log('couldnt connect to DB'))
 
@@ -112,7 +112,7 @@ const loadsScema = new mongoose.Schema({
     dateMonth:Number,
     dateYear:Number,
     clientName:String,
-    rep_id: String,
+    rep_id: Number,
     total: Number,
     paid: Number,
     laterPay: Number,
@@ -137,7 +137,7 @@ return result
 }
 
 async function getLoads(){
-    const results =await Load.find().select("-date -dateDay -dateMonth -dateYear -clientName -rep_id -total -paid -laterPay")
+    const results =await Load.find().select("-date")
     console.log(results)
     return results
 }
@@ -260,7 +260,10 @@ async function createSpecific(){
     }
 
     async function getAllCleints(req){
-     const clients =  await Load.find({ rep_id: req.query.rep_id}).select("clientName").exec()
-     console.log(req.query.rep_id)
+     const repid = req.query._id
+     console.log(repid)
+     const clients =  await Load.findOne({id:_id}).exec()
+     console.log(clients)
+     console.log(req.query._id)
       return clients
     }
