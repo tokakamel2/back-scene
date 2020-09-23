@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
-mongoose.connect('mongodb+srv://brad123:brad123@cluster0.otwbz.gcp.mongodb.net/Bakeries?retryWrites=true&w=majority')
+mongoose.connect('mongodb+srv://tokakamel2:tokaisthebest95@cluster0.rr1bh.mongodb.net/BAKERY?retryWrites=true&w=majority')
     .then(()=>console.log('connected to DB'))
     .catch(err=>console.log('couldnt connect to DB'))
 
