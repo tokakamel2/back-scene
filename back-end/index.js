@@ -9,11 +9,11 @@ const app =express();
 app.use(express.json())
 
 //add new user
-app.get('/new/user',async(req,res)=>{
+app.post('/new/user',async(req,res)=>{
      const user = await createSpecific()
      res.send(user)
 })
-app.get('/new/super',async(req,res)=>{
+app.post('/new/super',async(req,res)=>{
   const result= await createSuperVisor(req)
   res.send(result)
 })
@@ -115,7 +115,7 @@ const loadsScema = new mongoose.Schema({
     total: Number,
     paid: Number,
     laterPay: Number,
-
+    product:{type:Array, default: undefined},
     lebSmall:{type:Array, default: undefined},
     lebMid:{type:Array, default: undefined},
     lebBig:{type:Array, default: undefined},
