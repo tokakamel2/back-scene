@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-mongoose.connect('mongodb+srv://tokakamel2:<password>@cluster0.rr1bh.mongodb.net/<dbname>?retryWrites=true&w=majority')
+mongoose.connect('mongodb://localhost/backery')
     .then(()=>console.log('connected to DB'))
     .catch(err=>console.log('couldnt connect to DB'))
 
@@ -260,6 +260,7 @@ async function createSpecific(){
     }
 
     async function getAllCleints(req){
-     const clients =  await Load.find({ rep_id: req.query.rep_id }).select("clientName").exec();
+     const clients =  await Load.find({ rep_id: req.query.rep_id}).select("clientName").exec()
+     console.log(req.query.rep_id)
       return clients
     }
