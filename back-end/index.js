@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt-nodejs');
-mongoose.connect('mongodb+srv://tokakamel2:tokaisthebest95@cluster0.rr1bh.mongodb.net/BAKERY?retryWrites=true&w=majority')
+const bcrypt = require('bcryptjs');
+mongoose.connect('mongodb+srv://tokakamel2:<password>@cluster0.rr1bh.mongodb.net/<dbname>?retryWrites=true&w=majority')
     .then(()=>console.log('connected to DB'))
     .catch(err=>console.log('couldnt connect to DB'))
 
@@ -10,11 +10,12 @@ app.use(express.json())
 
 //add new user
 app.post('/new/user',async(req,res)=>{
-     const user = await createSpecific()
+     const user = await createUser().catch(err=>console.log(err))
+
      res.send(user)
 })
 app.post('/new/super',async(req,res)=>{
-  const result= await createSuperVisor(req)
+  const result= await createSuperVisor(req).catch(err=>console.log(err))
   res.send(result)
 })
 
@@ -116,18 +117,7 @@ const loadsScema = new mongoose.Schema({
     paid: Number,
     laterPay: Number,
     product:{type:Array, default: undefined},
-    lebSmall:{type:Array, default: undefined},
-    lebMid:{type:Array, default: undefined},
-    lebBig:{type:Array, default: undefined},
-    fino:{type:Array, default: undefined},
-    finoDouble:{type:Array, default: undefined},
-    finoStripped:{type:Array, default: undefined},
-    kaizar:{type:Array, default: undefined},
-    koras:{type:Array, default: undefined},
-    boqsomat:{type:Array, default: undefined},
-    karakeesh:{type:Array, default: undefined},
-    biscuits:{type:Array, default: undefined},
-    miniPizza:{type:Array, default: undefined},
+
 });
 
 const Load= mongoose.model('Load',loadsScema);
@@ -208,7 +198,9 @@ const User= mongoose.model('User',UserScema);
 
 async function createSuperVisor(req){
     const salt =await bcrypt.genSalt(10)
-    const hashed = await bcrypt.hash(req.body.password,salt);
+    const hashed = await bcrypt.hash(req.body.password,salt, null, function(err, hash) {
+        console.log('password')
+    });
 const supervisor= new SuperVisor({
     name: req.body.name,
     email:req.body.email,
@@ -237,7 +229,9 @@ async function createUser(req){
 
 async function createSpecific(){
     const salt =await bcrypt.genSalt(10)
+    console.log('salt',salt)
     const hashed = await bcrypt.hash('admin100',salt);
+    console.log('hashed',hashed)
     const user= new SuperVisor({
         name:'ahmed',
         email:'ahmed55@megadev.com',
@@ -266,6 +260,6 @@ async function createSpecific(){
     }
 
     async function getAllCleints(req){
-     const clients =  await Load.find({ rep_id: req.body.rep_id }).select("clientName").exec();
+     const clients =  await Load.find({ rep_id: req.query.rep_id }).select("clientName").exec();
       return clients
     }
