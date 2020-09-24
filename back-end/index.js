@@ -1,6 +1,7 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt-nodejs');
-mongoose.connect('mongodb+srv://tokakamel2:<password>@cluster0.rr1bh.mongodb.net/<dbname>?retryWrites=true&w=majority')
+const mongoose = require('mongoose').set('debug', true);
+const bcrypt = require('bcrypt');
+//mongodb+srv://tokakamel2:tokaisthebest95@cluster0.rr1bh.mongodb.net/BAKERY?retryWrites=true&w=majority
+mongoose.connect('mongodb://localhost:27017')
     .then(()=>console.log('connected to DB'))
     .catch(err=>console.log('couldnt connect to DB'))
 
@@ -10,7 +11,7 @@ app.use(express.json())
 
 //add new user
 app.post('/new/user',async(req,res)=>{
-     const user = await createUser().catch(err=>console.log(err))
+     const user = await createUser(req).catch(err=>console.log(err))
 
      res.send(user)
 })
@@ -43,7 +44,7 @@ app.get('/supervisor/loads',async(req,res)=>{
 })
 //get all loads of todat to supervisor
 app.get('/supervisor/loads/today',async(req,res)=>{
-    res.send(await findByDate(req.body))
+    res.send(await findByDate(req.query))
 })
 //get all products to the representative
 app.get('/products',(req,res)=>{
@@ -82,7 +83,7 @@ app.post('/rep/expenses',async(req,res)=>{
 })
 //get specifi representative expenses
 app.get('/supervisor/repExp',async(req,res)=>{
-    let repExp= await Expenses.find({rep_id:req.body.rep_id})
+    let repExp= await Expenses.find({rep_id:req.query.rep_id})
     res.send(repExp)
 
 })
@@ -149,8 +150,8 @@ async function findByDate(req){
   var dateMonth =d.getMonth()+1
   var dateYear =d.getFullYear()
   console.log('d',dateMonth)
-
- const todayLoads =  await Load.find({ dateDay: dateDay, dateMonth:dateMonth, dateYear:dateYear, rep_id:req.body.rep_id}).exec();
+  console.log(req.rep_id)
+ const todayLoads =  await Load.find({ dateDay: dateDay, dateMonth:dateMonth, dateYear:dateYear, rep_id:req.rep_id}).exec();
   return todayLoads
 }
 
@@ -246,7 +247,8 @@ async function createSpecific(){
 
 
     const ExpensesScema = new mongoose.Schema({
-        rep_id:String,
+        date: {type:Date, default: Date.now },
+        rep_id:Number,
         solar:Number,
         car:Number,
         personal:Number
@@ -260,10 +262,13 @@ async function createSpecific(){
     }
 
     async function getAllCleints(req){
-     const repid = req.query._id
-     console.log(repid)
-     const clients =  await Load.findOne({id:_id}).exec()
-     console.log(clients)
+     const repid1 = req.query._id
+     const repid=req.query.rep_id
+
+     console.log('repid',repid)
+     const clients =  await Load.find({rep_id: repid}).exec()
+
+     console.log('cleints',clients)
      console.log(req.query._id)
-      return clients
+     return clients
     }
