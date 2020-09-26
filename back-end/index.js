@@ -12,7 +12,7 @@ app.use(express.json())
 
 //add new user
 app.post('/new/user',async(req,res)=>{
-     const user = await createUser(req).catch(err=>console.log(err))
+     const user = await createUser(req).catch(err=>res.send(err))
 
      res.send(user)
 })
