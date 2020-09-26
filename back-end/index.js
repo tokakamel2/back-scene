@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt-nodejs');
 //mongodb+srv://tokakamel2:tokaisthebest95@cluster0.rr1bh.mongodb.net/BAKERY?retryWrites=true&w=majority
 //'mongodb://localhost:27017
 mongoose.connect('mongodb://localhost:27017')
