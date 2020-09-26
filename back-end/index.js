@@ -268,8 +268,8 @@ async function createSpecific(){
         const result=await expenses.save()
         return result
     }
-    async function allExpenses(){
-        const results =  await Expenses.find().select("total").exec()
+    async function allExpenses(req){
+        const results =  await Expenses.find({rep_id:req.query.rep_id}).select("total").exec()
         return results
     }
     async function getAllCleints(req){
