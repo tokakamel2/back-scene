@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt-nodejs');
+const bcrypt = require('bcrypt');
 //mongodb+srv://tokakamel2:tokaisthebest95@cluster0.rr1bh.mongodb.net/BAKERY?retryWrites=true&w=majority
-mongoose.connect('mongodb+srv://tokakamel2:tokaisthebest95@cluster0.rr1bh.mongodb.net/BAKERY?retryWrites=true&w=majority')
+//'mongodb://localhost:27017
+mongoose.connect('mongodb://localhost:27017')
     .then(()=>console.log('connected to DB'))
     .catch(err=>console.log('couldnt connect to DB'))
 
@@ -81,6 +82,10 @@ app.get('/supervisor/allrep',async(req,res)=>{
 app.post('/rep/expenses',async(req,res)=>{
    res.send(await creatExpenses(req.body))
 })
+//get all expenses
+app.get('/allExpenses',async(req,res)=>{
+    res.send(await allExpenses())
+ })
 //get specifi representative expenses
 app.get('/supervisor/repExp',async(req,res)=>{
     let repExp= await Expenses.find({rep_id:req.query.rep_id})
@@ -251,16 +256,22 @@ async function createSpecific(){
         rep_id:Number,
         solar:Number,
         car:Number,
-        personal:Number
+        personal:Number,
+        total:Number
     })
     const Expenses= mongoose.model('Expenses',ExpensesScema);
 
     async function creatExpenses(exp){
         const expenses= new Expenses(exp)
+        const total= expenses.solar +expenses.car+expenses.personal
+        expenses.total=total
         const result=await expenses.save()
         return result
     }
-
+    async function allExpenses(){
+        const results =  await Expenses.find().select("total").exec()
+        return results
+    }
     async function getAllCleints(req){
      const repid1 = req.query._id
      const repid=req.query.rep_id
