@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
+//mongodb+srv://tokakamel2:tokaisthebest95@cluster0.rr1bh.mongodb.net/BAKERY?retryWrites=true&w=majority
 mongoose.connect('mongodb+srv://tokakamel2:tokaisthebest95@cluster0.rr1bh.mongodb.net/BAKERY?retryWrites=true&w=majority')
     .then(()=>console.log('connected to DB'))
     .catch(err=>console.log('couldnt connect to DB'))
@@ -265,7 +266,7 @@ async function createSpecific(){
      const repid=req.query.rep_id
 
      console.log('repid',repid)
-     const clients =  await Load.find({rep_id: repid}).exec()
+     const clients =  await Load.find({rep_id: repid}).select("clientName").exec()
 
      console.log('cleints',clients)
      console.log(req.query._id)
