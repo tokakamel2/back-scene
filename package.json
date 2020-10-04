@@ -1,0 +1,19 @@
+{
+  "name": "nogomlebnan",
+  "description": "a really cool app",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "version": "1.0.0",
+  "engines": {
+    "node": "14.7.0",
+    "npm": "6.14.7"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "bcrypt-nodejs": "0.0.3",
+    "bcryptjs": "^2.4.3",
+    "express": "^4.17.1",
+    "mongoose": "^5.10.7"
+  }
+}
