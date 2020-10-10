@@ -103,7 +103,7 @@ app.post("/rep/login", async (req, res) => {
   const validPassword = await bcrypt.compare(req.body.password, user.password);
   if (!validPassword) return res.status(400).send("Invalid email or password");
   const token = jwt.sign({_id:user._id,rep_id:user.rep_id},config.get('jwtPrivateKey'))
-  res.header('x-auth-token',token).send(true);
+  res.header('x-auth-token',token).send(user.rep_id);
   res.send(user.rep_id);
 });
 //get all reps
@@ -321,9 +321,11 @@ const ExpensesScema = new mongoose.Schema({
 const Expenses = mongoose.model("Expenses", ExpensesScema);
 
 async function creatExpenses(exp) {
+  console.log('eeexp',exp.car)
   const expenses = new Expenses(exp);
   const total = expenses.solar + expenses.car + expenses.personal;
-  expenses.total = total;
+  if(total) expenses.total = total;
+  if(!total) expenses.total=0
   const result = await expenses.save();
   return result;
 }
