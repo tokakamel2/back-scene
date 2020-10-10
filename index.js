@@ -46,9 +46,10 @@ app.get("/allClients",auth ,async (req, res) => {
   res.status(401).send('unauthrized');
 });
 //posting new load by reoresentative
-app.post("/representative/newLoad", async (req, res) => {
+app.post("/representative/newLoad",auth ,async (req, res) => {
   const result = await createLoad(req.body);
-  res.send(result);
+  return res.send(result);
+
 });
 //get all loads to supervisor
 app.get("/supervisor/loads",auth ,async (req, res) => {
