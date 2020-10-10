@@ -47,7 +47,7 @@ app.get("/allClients",auth ,async (req, res) => {
 });
 //posting new load by reoresentative
 app.post("/representative/newLoad",auth ,async (req, res) => {
-  const result = await createLoad(req.body);
+  const result = await createLoad(req.body).catch(err=>console.log(err))
   return res.send(result);
 
 });
@@ -179,7 +179,12 @@ async function createLoad(body) {
   var time = timeHours.concat(":",timeMin,":",timeSec)
 
   var dateString = dateDay.concat("/",dateMonth,"/",dateYear)
+  try{
   body.clientName=body.clientName.trim()
+  }
+  catch{
+    body.clientName=body.clientName
+  }
   const load = new Load(body);
   load.dateDay = dateDay;
   load.dateMonth = dateMonth;
