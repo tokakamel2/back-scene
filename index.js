@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const config = require('config');
+const auth = require('./middleware/auth')
 //mongodb+srv://tokakamel2:tokaisthebest95@cluster0.rr1bh.mongodb.net/BAKERY?retryWrites=true&w=majority
 //'mongodb://localhost:27017
 mongoose
@@ -40,9 +41,9 @@ app.get("/delete/doc", async (req, res) => {
 });
 
 //get all cleints
-app.get("/allClients", async (req, res) => {
-  const result = await getAllCleints(req);
-  res.send(result);
+app.get("/allClients",auth ,async (req, res) => {
+  if(!req.user.rep_id) return  res.send(await getAllCleints(req))
+  res.status(401).send('unauthrized');
 });
 //posting new load by reoresentative
 app.post("/representative/newLoad", async (req, res) => {
@@ -50,34 +51,39 @@ app.post("/representative/newLoad", async (req, res) => {
   res.send(result);
 });
 //get all loads to supervisor
-app.get("/supervisor/loads", async (req, res) => {
-  res.send(await getLoads());
+app.get("/supervisor/loads",auth ,async (req, res) => {
+  if(!req.user.rep_id) return res.send(await getLoads());
+  res.status(401).send('unauthrized');
 });
 //get all loads of todat to supervisor
-app.get("/supervisor/loads/today", async (req, res) => {
-  res.send(await findByDate(req.query));
+app.get("/supervisor/loads/today", auth ,async (req, res) => {
+  if(!req.user.rep_id) return res.send(await findByDate(req.query));
+  res.status(401).send('unauthrized');
 });
 //get products of specific client
-app.get("/supervisor/loads/client", async (req, res) => {
+app.get("/supervisor/loads/client",auth ,async (req, res) => {
   const result = await Load.findOne(req.query).catch(err=>res.send(err))
-  res.send(result.product)
+  if(!req.user.rep_id) return res.send(result.product)
+  res.status(401).send('unauthrized');
 
 });
 //get bill of specific client
-app.get("/supervisor/loads/client/bill", async (req, res) => {
+app.get("/supervisor/loads/client/bill",auth ,async (req, res) => {
   const result = await Load.findOne(
     req.query
   ).select("total paid laterPay date dateDay dateMonth dateYear dateOnly time dateString")
 
   console.log(result);
   console.log('v');
-  res.send(result);
+  if(!req.user.rep_id) return res.send(result);
+  res.status(401).send('unauthrized');
+
 });
 //get all products to the representative
 app.get("/products", (req, res) => {
   res.send(products);
 });
-//login
+//login Admin
 app.post("/supervisor/login", async (req, res) => {
   let user = await SuperVisor.findOne({ email: req.body.email });
   if (!user) return res.status(400).send("Invalid email or password");
@@ -87,33 +93,37 @@ app.post("/supervisor/login", async (req, res) => {
   const token = jwt.sign({_id:user._id},config.get('jwtPrivateKey'))
   res.header('x-auth-token',token).send(true);
 });
+//login rep
+
 app.post("/rep/login", async (req, res) => {
   let user = await User.findOne({ email: req.body.email });
   if (!user) return res.status(400).send("Invalid email or password");
 
   const validPassword = await bcrypt.compare(req.body.password, user.password);
   if (!validPassword) return res.status(400).send("Invalid email or password");
-
+  const token = jwt.sign({_id:user._id,rep_id:user.rep_id},config.get('jwtPrivateKey'))
+  res.header('x-auth-token',token).send(true);
   res.send(user.rep_id);
 });
 //get all reps
-app.get("/supervisor/allrep", async (req, res) => {
+app.get("/supervisor/allrep", auth,async (req, res) => {
   const results = await User.find().select("-password -email");
 
   console.log(results);
-  res.send(results);
+  if(!req.user.rep_id) return res.send(results);
+  res.send(user.rep_id);
 });
 //expenses post
-app.post("/rep/expenses", async (req, res) => {
+app.post("/rep/expenses",auth ,async (req, res) => {
   res.send(await creatExpenses(req.body));
 });
 //get all expenses
-app.get("/allExpenses", async (req, res) => {
+app.get("/allExpenses",auth ,async (req, res) => {
   const result = await allExpenses(req).catch((err) => console.log(err));
   res.send(result);
 });
 //get specifi representative expenses
-app.get("/supervisor/repExp", async (req, res) => {
+app.get("/supervisor/repExp",auth ,async (req, res) => {
   var d = new Date();
   var dateDay = d.getDate();
   var dateMonth = d.getMonth() + 1;
