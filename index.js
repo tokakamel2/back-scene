@@ -1,5 +1,7 @@
+const jwt = require('jsonwebtoken')
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const config = require('config');
 //mongodb+srv://tokakamel2:tokaisthebest95@cluster0.rr1bh.mongodb.net/BAKERY?retryWrites=true&w=majority
 //'mongodb://localhost:27017
 mongoose
@@ -8,6 +10,12 @@ mongoose
   )
   .then(() => console.log("connected to DB"))
   .catch((err) => console.log("couldnt connect to DB"));
+
+if (!config.get('jwtPrivateKey')){
+  console.log('FATAL ERROR: jwtPrivateKey is not defined')
+  process.exit(1);
+}
+
 
 const express = require("express");
 const app = express();
@@ -76,8 +84,8 @@ app.post("/supervisor/login", async (req, res) => {
 
   const validPassword = await bcrypt.compare(req.body.password, user.password);
   if (!validPassword) return res.status(400).send("Invalid email or password");
-
-  res.send(user._id);
+  const token = jwt.sign({_id:user._id},config.get('jwtPrivateKey'))
+  res.header('x-auth-token',token).send(true);
 });
 app.post("/rep/login", async (req, res) => {
   let user = await User.findOne({ email: req.body.email });
