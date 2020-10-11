@@ -47,6 +47,7 @@ app.get("/allClients",auth ,async (req, res) => {
 });
 //posting new load by reoresentative
 app.post("/representative/newLoad",auth ,async (req, res) => {
+  const rep_id =req.user.rep_id
   const result = await createLoad(req.body).catch(err=>console.log(err))
   return res.send(result);
 
@@ -168,7 +169,7 @@ const loadsScema = new mongoose.Schema({
 
 const Load = mongoose.model("Load", loadsScema);
 
-async function createLoad(body) {
+async function createLoad(body, rep_id) {
   var d = new Date();
   var dateDay = JSON.stringify(d.getDate());
   var dateMonth =JSON.stringify(d.getMonth() + 1);
@@ -186,6 +187,7 @@ async function createLoad(body) {
     body.clientName=body.clientName
   }
   const load = new Load(body);
+  load.rep_id= rep_id
   load.dateDay = dateDay;
   load.dateMonth = dateMonth;
   load.dateYear = dateYear;
