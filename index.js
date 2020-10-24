@@ -117,7 +117,8 @@ app.get("/supervisor/allrep", auth,async (req, res) => {
 });
 //expenses post
 app.post("/rep/expenses",auth ,async (req, res) => {
-  res.send(await creatExpenses(req.body));
+
+  res.send(await creatExpenses(req.body, req));
 });
 //get all expenses
 app.get("/allExpenses",auth ,async (req, res) => {
@@ -131,7 +132,7 @@ app.get("/supervisor/repExp",auth ,async (req, res) => {
   var dateMonth = d.getMonth() + 1;
   var dateYear = d.getFullYear();
 
-  let repExp = await Expenses.findOne({ rep_id: req.user.rep_id}).sort({"date":-1})
+  let repExp = await Expenses.findOne({ rep_id: req.query.rep_id}).sort({"date":-1})
   console.log('qw',repExp)
   res.send(JSON.stringify(repExp.total))
 });
@@ -324,12 +325,13 @@ const ExpensesScema = new mongoose.Schema({
 });
 const Expenses = mongoose.model("Expenses", ExpensesScema);
 
-async function creatExpenses(exp) {
+async function creatExpenses(exp,req) {
   console.log('eeexp',exp.car)
   const expenses = new Expenses(exp);
   const total = expenses.solar + expenses.car + expenses.personal;
   if(total) expenses.total = total;
   if(!total) expenses.total=0
+  expenses.rep_id=req.user.rep_id
   const result = await expenses.save();
   return result;
 }
