@@ -134,6 +134,7 @@ app.get("/supervisor/repExp",auth ,async (req, res) => {
 
   let repExp = await Expenses.findOne({ rep_id: req.query.rep_id}).sort({"date":-1})
   console.log('qw',repExp)
+  if(!repExp) res.send("0")
   res.send(JSON.stringify(repExp.total))
 });
 
