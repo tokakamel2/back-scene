@@ -133,15 +133,17 @@ app.get("/supervisor/repExp",auth ,async (req, res) => {
   var dateYear = d.getFullYear();
 
   let repExp = await Expenses.findOne({ rep_id: req.query.rep_id}).sort({"date":-1})
-  if (repExp.date.getDate() == dateDay){
+  if(!repExp) res.send("0")
+
+  else if (repExp.date.getDate() == dateDay){
     res.send(JSON.stringify(repExp.total))
-    console.log(repExp.date)
+
   }else{
     res.send("0")
   }
 
   console.log('qw',repExp)
-  if(!repExp) res.send("0")
+
 
 
 });
