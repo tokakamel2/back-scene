@@ -148,6 +148,11 @@ app.get("/supervisor/repExp",auth ,async (req, res) => {
 
 });
 
+app.get("/isValidKey",auth ,async (req, res) => {
+
+  res.send('ok');
+});
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log("listening at port 3000"));
 
