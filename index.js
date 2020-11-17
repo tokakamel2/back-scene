@@ -23,12 +23,12 @@ const app = express();
 app.use(express.json());
 
 //add new user
-app.post("/new/user", async (req, res) => {
+app.post("/new/user", auth,async (req, res) => {
   const user = await createUser(req).catch((err) => res.send(err));
 
   res.send(user);
 });
-app.post("/new/super", async (req, res) => {
+app.post("/new/super/", auth,async (req, res) => {
   const result = await createSuperVisor(req).catch((err) => console.log(err));
   res.send(result);
 });
@@ -92,7 +92,7 @@ app.post("/supervisor/login", async (req, res) => {
 
   const validPassword = await bcrypt.compare(req.body.password, user.password);
   if (!validPassword) return res.status(400).send("Invalid email or password");
-  const token = jwt.sign({_id:user._id},config.get('jwtPrivateKey'),{ expiresIn: '10m' })
+  const token = jwt.sign({_id:user._id},config.get('jwtPrivateKey'),{ expiresIn: '5m' })
   res.header('x-auth-token',token).send(true);
 });
 //login rep
@@ -123,6 +123,11 @@ app.post("/rep/expenses",auth ,async (req, res) => {
 //get all expenses
 app.get("/allExpenses",auth ,async (req, res) => {
   const result = await allExpenses(req).catch((err) => console.log(err));
+  res.send(result);
+});
+//get all reps
+app.get("/allReps",auth ,async (req, res) => {
+  const result = await allReps(req).catch((err) => console.log(err));
   res.send(result);
 });
 //get specifi representative expenses
@@ -350,6 +355,11 @@ async function creatExpenses(exp,req) {
   expenses.rep_id=req.user.rep_id
   const result = await expenses.save();
   return result;
+}
+async function allReps(req){
+  const results = await User.find().select("name rep_id")
+  return results
+
 }
 async function allExpenses(req) {
   var d = new Date();
