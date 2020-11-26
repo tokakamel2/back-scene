@@ -92,7 +92,7 @@ app.post("/supervisor/login", async (req, res) => {
 
   const validPassword = await bcrypt.compare(req.body.password, user.password);
   if (!validPassword) return res.status(400).send("Invalid email or password");
-  const token = jwt.sign({_id:user._id},config.get('jwtPrivateKey'),{ expiresIn: '5m' })
+  const token = jwt.sign({_id:user._id},config.get('jwtPrivateKey'),{ expiresIn: '1m' })
   res.header('x-auth-token',token).send(true);
 });
 //login rep
@@ -103,7 +103,7 @@ app.post("/rep/login", async (req, res) => {
 
   const validPassword = await bcrypt.compare(req.body.password, user.password);
   if (!validPassword) return res.status(400).send("Invalid email or password");
-  const token = jwt.sign({_id:user._id,rep_id:user.rep_id},config.get('jwtPrivateKey'),{ expiresIn: '10m' })
+  const token = jwt.sign({_id:user._id,rep_id:user.rep_id},config.get('jwtPrivateKey'),{ expiresIn: '1m' })
   res.header('x-auth-token',token).send(user.rep_id);
   res.send(user.rep_id);
 });
